@@ -469,7 +469,8 @@ namespace UnityEditor.Rendering.HighDefinition
 
                 validSlots.Add(slots[i]);
             }
-            return validSlots.OfType<IMayRequireNormal>().Aggregate(NeededCoordinateSpace.None, (mask, node) => mask | node.RequiresNormal(stageCapability));
+            var slotRequirements = validSlots.OfType<IMayRequireNormal>().Aggregate(NeededCoordinateSpace.None, (mask, node) => mask | node.RequiresNormal(stageCapability));
+            return (enableShadowMatte.isOn ? 0 : slotRequirements);
         }
 
         public NeededCoordinateSpace RequiresTangent(ShaderStageCapability stageCapability)
@@ -485,7 +486,8 @@ namespace UnityEditor.Rendering.HighDefinition
 
                 validSlots.Add(slots[i]);
             }
-            return validSlots.OfType<IMayRequireTangent>().Aggregate(NeededCoordinateSpace.None, (mask, node) => mask | node.RequiresTangent(stageCapability));
+            var slotRequirements = validSlots.OfType<IMayRequireNormal>().Aggregate(NeededCoordinateSpace.None, (mask, node) => mask | node.RequiresNormal(stageCapability));
+            return (enableShadowMatte.isOn ? 0 : slotRequirements);
         }
 
         public override void CollectShaderProperties(PropertyCollector collector, GenerationMode generationMode)
